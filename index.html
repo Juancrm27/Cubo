@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Hello Cube</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="./css/style.css" />
+
+
+
+</head>
+<body>
+
+
+
+    <script type="module">
+
+        import * as THREE from './build/three.module.js';
+        import { OrbitControls } from './jsm/controls/OrbitControls.js';
+        import { GLTFLoader } from './jsm/loaders/GLTFLoader.js';
+
+
+        //creating scene
+        var scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x2E2E38);
+
+        //add camera
+        var camera = new THREE.PerspectiveCamera(
+            75,
+            window.innerWidth/window.innerHeight
+        );
+
+        //renderer
+        var renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        //add geometry
+        var geometry = new THREE.BoxGeometry();
+        var material = new THREE.MeshBasicMaterial({color: 0x2E2E38, wireframe: true});
+        var cube = new THREE.Mesh(geometry, material);
+
+
+        //GLB Cube
+        const loader = new GLTFLoader();
+        loader.load('./assets/cube/Cube_v1.glb', function(gltf) {
+          scene.add(gltf.scene);
+          renderer.setPixelRatio(window.devicePixelRatio);
+          cube = gltf.scene.children[0];
+          animate();
+
+          camera.position.z = 2;
+        });
+
+
+        //light
+        const ambient = new THREE.AmbientLight(0x404040, 7);
+        scene.add(ambient);
+
+
+        //mouse control
+        const controls = new OrbitControls( camera, renderer.domElement );
+
+        controls.minDistance = 1;
+        controls.maxDistance = 4;
+
+        //resize screen
+        window.addEventListener("resize", redimensionar)
+
+        function redimensionar(){
+          camera.aspect = window.innerWidth / window.innerHeight;
+          camera.updateProjectionMatrix();
+          renderer.setSize(window.innerWidth, window.innerHeight);
+          renderer.render(scene, camera);
+
+        }
+
+
+        //animation
+        var animate = function(){
+            requestAnimationFrame(animate);
+
+            cube.rotation.y += 0.001;
+
+            renderer.render(scene, camera);
+
+        }
+
+        animate();
+
+    </script>
+
+</body>
+</html>
