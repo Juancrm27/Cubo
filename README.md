@@ -1,2 +1,2 @@
 # Cubo
-Cubo con botones
+-Cubo con botones a popups
